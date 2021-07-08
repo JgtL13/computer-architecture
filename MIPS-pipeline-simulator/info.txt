@@ -18,7 +18,7 @@ sw $16, 30($17)
 lw $19, 40($17)
 sub $21, $22, $19
 
-Sample output:
+Sample output file:
 ===clock cycle 1===
 IF :add $17, $19, $20
 ID :nop
