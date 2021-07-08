@@ -1,1 +1,143 @@
+A program that simulates the 5-Stage MIPS Pipeline.
+The program reads a file named "input.txt", explained using the sample input file below.
+Outputs a file named "output.txt" showing instructions executed in every stage(IF, ID, EX, MEM, WB) during each round.
+This program handles data hazards, wrong-predictions, and updates register to 1 when lw occurs.
 
+Sample input file:
+T                       (T as predict taken, NT as Predict non-taken)
+1 1 2 3 2 1 1 1         (initial value of register $16 ~ $23)
+add $17, $19, $20       (10 ~ 20 instructions including: lw, sw, add, addi, sub, beq)
+beq $18, $19, L1
+lw $19, 20($17)
+sub $21, $22, $23
+add $16, $18, $21
+sw $16, 20($17)
+L1 :
+addi $16, $20, 1 
+sw $16, 30($17)
+lw $19, 40($17)
+sub $21, $22, $19
+
+Sample output:
+===clock cycle 1===
+IF :add $17, $19, $20
+ID :nop
+EX :nop
+MEM:nop
+WB :nop
+
+===clock cycle 2===
+IF :beq $18, $19, L1
+ID :add $17, $19, $20
+EX :nop
+MEM:nop
+WB :nop
+
+===clock cycle 3===
+IF :Bubble(nop)
+ID :beq $18, $19, L1
+EX :add $17, $19, $20
+MEM:nop
+WB :nop
+
+===clock cycle 4===
+IF :lw $19, 20($17)
+ID :Bubble(nop)
+EX :beq $18, $19, L1
+MEM:add $17, $19, $20
+WB :nop
+
+===clock cycle 5===
+IF :sub $21, $22, $23
+ID :lw $19, 20($17)
+EX :Bubble(nop)
+MEM:beq $18, $19, L1
+WB :add $17, $19, $20
+
+===clock cycle 6===
+IF :add $16, $18, $21
+ID :sub $21, $22, $23
+EX :lw $19, 20($17)
+MEM:Bubble(nop)
+WB :beq $18, $19, L1
+
+===clock cycle 7===
+IF :sw $16, 20($17)
+ID :add $16, $18, $21
+EX :sub $21, $22, $23
+MEM:lw $19, 20($17)
+WB :Bubble(nop)
+
+===clock cycle 8===
+IF :addi $16, $20, 1 
+ID :sw $16, 20($17)
+EX :add $16, $18, $21
+MEM:sub $21, $22, $23
+WB :lw $19, 20($17)
+
+
+Forwarding from stage 4 to stage 3.
+===clock cycle 9===
+IF :sw $16, 30($17)
+ID :addi $16, $20, 1 
+EX :sw $16, 20($17)
+MEM:add $16, $18, $21
+WB :sub $21, $22, $23
+
+
+Forwarding from stage 4 to stage 3.
+===clock cycle 10===
+IF :lw $19, 40($17)
+ID :sw $16, 30($17)
+EX :addi $16, $20, 1 
+MEM:sw $16, 20($17)
+WB :add $16, $18, $21
+
+===clock cycle 11===
+IF :sub $21, $22, $19
+ID :lw $19, 40($17)
+EX :sw $16, 30($17)
+MEM:addi $16, $20, 1 
+WB :sw $16, 20($17)
+
+
+Forwarding from stage 4 to stage 3.
+===clock cycle 12===
+IF :nop
+ID :sub $21, $22, $19
+EX :lw $19, 40($17)
+MEM:sw $16, 30($17)
+WB :addi $16, $20, 1 
+
+===clock cycle 13===
+IF :nop
+ID :sub $21, $22, $19
+EX :Bubble(nop)
+MEM:lw $19, 40($17)
+WB :sw $16, 30($17)
+
+===clock cycle 14===
+IF :nop
+ID :nop
+EX :sub $21, $22, $19
+MEM:Bubble(nop)
+WB :lw $19, 40($17)
+
+
+Forwarding from stage 5 to stage 3.
+===clock cycle 15===
+IF :nop
+ID :nop
+EX :nop
+MEM:sub $21, $22, $19
+WB :Bubble(nop)
+
+===clock cycle 16===
+IF :nop
+ID :nop
+EX :nop
+MEM:nop
+WB :sub $21, $22, $19
+
+$16~$23
+3 5 2 1 2 0 1 1
