@@ -40,14 +40,16 @@ EX :add $17, $19, $20
 MEM:nop
 WB :nop
 
-===clock cycle 4===
-IF :lw $19, 20($17)
-ID :Bubble(nop)
-EX :beq $18, $19, L1
-MEM:add $17, $19, $20
-WB :nop
+.
+.
+.
 
-(...and so on)
+===clock cycle 16===
+IF :nop
+ID :nop
+EX :nop
+MEM:nop
+WB :sub $21, $22, $19
 
 $16~$23
 3 5 2 1 2 0 1 1
