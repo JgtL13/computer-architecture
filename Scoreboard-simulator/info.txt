@@ -77,4 +77,30 @@ Register result status
 F6
 Integer
 
-(...and so on)
+.
+.
+.
+
+=====cycle 62=====
+                                                            Read        Execution   Write
+Instruction             j           k           Issue       operands    complete    Result
+L.D         F6                      R2          1           2           3           4
+L.D         F2                      R3          5           6           7           8
+MUL.D       F0          F2          F4          6           9           19          20
+SUB.D       F8          F6          F2          7           9           11          12
+DIV.D       F10         F0          F6          8           21          61          62
+ADD.D       F6          F8          F2          13          14          16          22
+
+Functional unit status
+Time    Name    Busy    Op      Fi      Fj      Fk      Qj      Qk      Rj      Rk
+0       Integer false
+0       Mult1   false
+0       Mult2   false
+0       Add     false
+0       Divide  false
+
+Register result status
+
+
+
+=====FINISH=====
