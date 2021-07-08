@@ -76,8 +76,5 @@ Time    Name    Busy    Op      Fi      Fj      Fk      Qj      Qk      Rj      
 Register result status
 F6
 Integer
-.
-.
-.
-(and so on)
 
+(...and so on)
